@@ -7,57 +7,53 @@ public class Recursion {
 
     public static void main(String[] args) throws CloneNotSupportedException {
         Box mainBox = getFilledMainBox();
-        String standardKey = findKeyByStandard(mainBox.clone());
-        System.out.println("Standard key: " + standardKey);
+        findKeyByStandard(mainBox.clone());
         findKeyByRecursion(mainBox.clone());
 
-        StrangeBox strangeMainBox = getFilledMainStrangeBox();
-        findKeyByStrangeRecursion(strangeMainBox.clone());
+        ObjectBox strangeMainBox = getFilledMainObjectBox();
+        findKeyByObjectRecursion(strangeMainBox.clone());
     }
 
-    private static String findKeyByStandard(Box mainBox) {
+    private static void findKeyByStandard(Box mainBox) {
         List<Box> pile = new ArrayList<>();
         pile.add(mainBox);
 
         while (!pile.isEmpty()) {
-            Box firstBox = pile.get(0);
+            Box currentBox = pile.get(0);
 
-            for (Box box : firstBox.boxList) {
+            for (Box box : currentBox.boxList) {
                 if (box.key != null) {
-                    return box.key;
+                    System.out.println("Standard key: " + box.key);
+                    return;
                 }
 
                 if (!box.boxList.isEmpty()) {
-                    pile.addAll(box.boxList);
+                    pile.add(box);
                 }
-                pile.remove(box);
-                ((ArrayList<Box>) pile).trimToSize();
             }
+            pile.remove(currentBox);
         }
-
-        return null;
     }
 
-    private static void findKeyByRecursion(Box mainBox) {
-        if (mainBox.key != null) {
-            System.out.println("Recursion key: " + mainBox.key);
+    private static void findKeyByRecursion(Box box) {
+        if (box.key != null) {
+            System.out.println("Recursion key: " + box.key);
             return;
         }
 
-        for (Box box : mainBox.boxList) {
-            findKeyByStandard(box);
+        for (Box currentBox : box.boxList) {
+            findKeyByRecursion(currentBox);
         }
     }
 
-    private static void findKeyByStrangeRecursion(StrangeBox mainBox) {
+    private static void findKeyByObjectRecursion(Object thing) {
+        if (thing instanceof String) {
+            System.out.println("ObjectBox Recursion key: " + thing);
+            return;
+        }
 
-        for (Object thing : mainBox.boxList) {
-            if (thing instanceof String) {
-                System.out.println("Strange Recursion key: " + thing);
-                return;
-            } else {
-                findKeyByStrangeRecursion((StrangeBox) thing);
-            }
+        for (Object currentThing : ((ObjectBox) thing).boxList) {
+            findKeyByObjectRecursion(currentThing);
         }
     }
 
@@ -93,18 +89,18 @@ public class Recursion {
         return mainBox;
     }
 
-    private static StrangeBox getFilledMainStrangeBox() {
-        StrangeBox mainBox = new StrangeBox();
-        mainBox.boxList.add(new StrangeBox());
-        ((StrangeBox) mainBox.boxList.get(0)).boxList.add(new StrangeBox());
-        ((StrangeBox) mainBox.boxList.get(0)).boxList.add(new StrangeBox());
-        ((StrangeBox) mainBox.boxList.get(0)).boxList.add(new StrangeBox());
-        mainBox.boxList.add(new StrangeBox());
-        ((StrangeBox) mainBox.boxList.get(1)).boxList.add(new StrangeBox());
-        ((StrangeBox) mainBox.boxList.get(1)).boxList.add(new StrangeBox());
-        ((StrangeBox)((StrangeBox) mainBox.boxList.get(1)).boxList.get(0)).boxList.add(new StrangeBox());
-        ((StrangeBox)((StrangeBox) mainBox.boxList.get(1)).boxList.get(0)).boxList.add("Key in box 3:1:1");
-        ((StrangeBox) mainBox.boxList.get(1)).boxList.add(new StrangeBox());
+    private static ObjectBox getFilledMainObjectBox() {
+        ObjectBox mainBox = new ObjectBox();
+        mainBox.boxList.add(new ObjectBox());
+        ((ObjectBox) mainBox.boxList.get(0)).boxList.add(new ObjectBox());
+        ((ObjectBox) mainBox.boxList.get(0)).boxList.add(new ObjectBox());
+        ((ObjectBox) mainBox.boxList.get(0)).boxList.add(new ObjectBox());
+        mainBox.boxList.add(new ObjectBox());
+        ((ObjectBox) mainBox.boxList.get(1)).boxList.add(new ObjectBox());
+        ((ObjectBox) mainBox.boxList.get(1)).boxList.add(new ObjectBox());
+        ((ObjectBox)((ObjectBox) mainBox.boxList.get(1)).boxList.get(0)).boxList.add(new ObjectBox());
+        ((ObjectBox)((ObjectBox) mainBox.boxList.get(1)).boxList.get(0)).boxList.add("Key in box 3:1:1");
+        ((ObjectBox) mainBox.boxList.get(1)).boxList.add(new ObjectBox());
 
         return mainBox;
     }
@@ -116,24 +112,16 @@ public class Recursion {
 
         @Override
         public Box clone() throws CloneNotSupportedException {
-//            Box clone = (Box) super.clone();
-//            Box clone = new Box();
-//            clone.boxList.addAll(this.boxList);
-//            clone.key = this.key;
             return (Box) super.clone();
         }
     }
 
-    private static class StrangeBox implements Cloneable {
+    private static class ObjectBox implements Cloneable {
         List<Object> boxList = new ArrayList<>();
 
         @Override
-        public StrangeBox clone() throws CloneNotSupportedException {
-//            Box clone = (Box) super.clone();
-//            Box clone = new Box();
-//            clone.boxList.addAll(this.boxList);
-//            clone.key = this.key;
-            return (StrangeBox) super.clone();
+        public ObjectBox clone() throws CloneNotSupportedException {
+            return (ObjectBox) super.clone();
         }
     }
 }
