@@ -20,7 +20,9 @@ public class Recursion {
         pile.add(mainBox);
 
         while (!pile.isEmpty()) {
-            for (Box box : pile) {
+            Box firstBox = pile.get(0);
+
+            for (Box box : firstBox.boxList) {
                 if (box.key != null) {
                     return box.key;
                 }
