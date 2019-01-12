@@ -8,7 +8,8 @@ public class Recursion {
     public static void main(String[] args) throws CloneNotSupportedException {
         Box mainBox = getFilledMainBox();
         findKeyByStandard(mainBox.clone());
-        findKeyByRecursion(mainBox.clone());
+        String key = findKeyByRecursion(mainBox.clone());
+        System.out.println("Recursion key: " + key);
 
         ObjectBox strangeMainBox = getFilledMainObjectBox();
         findKeyByObjectRecursion(strangeMainBox.clone());
@@ -35,15 +36,19 @@ public class Recursion {
         }
     }
 
-    private static void findKeyByRecursion(Box box) {
+    private static String findKeyByRecursion(Box box) {
         if (box.key != null) {
-            System.out.println("Recursion key: " + box.key);
-            return;
+            return box.key;
         }
 
         for (Box currentBox : box.boxList) {
-            findKeyByRecursion(currentBox);
+            String key = findKeyByRecursion(currentBox);
+            if (key != null) {
+                return key;
+            }
         }
+
+        return null;
     }
 
     private static void findKeyByObjectRecursion(Object thing) {
@@ -74,9 +79,9 @@ public class Recursion {
         mainBox.boxList.get(3).boxList.add(new Box());
         mainBox.boxList.get(3).boxList.add(new Box());
         mainBox.boxList.get(3).boxList.get(1).boxList.add(new Box());
-        Box boxWithKey = new Box();
-        boxWithKey.key = "Key in box 3:1:1";
-        mainBox.boxList.get(3).boxList.get(1).boxList.add(boxWithKey);
+//        Box boxWithKey = new Box();
+//        boxWithKey.key = "Key in box 3:1:1";
+//        mainBox.boxList.get(3).boxList.get(1).boxList.add(boxWithKey);
         mainBox.boxList.get(3).boxList.get(1).boxList.add(new Box());
         mainBox.boxList.get(3).boxList.add(new Box());
 
