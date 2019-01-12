@@ -7,15 +7,17 @@ public class Recursion {
 
     public static void main(String[] args) throws CloneNotSupportedException {
         Box mainBox = getFilledMainBox();
-        findKeyByStandard(mainBox.clone());
-        String key = findKeyByRecursion(mainBox.clone());
-        System.out.println("Recursion key: " + key);
+        String standardKey = findKeyByFromField(mainBox.clone());
+        System.out.println("Standard found key: " + standardKey);
+        String recursionKey = recursiveFindKeyFromField(mainBox.clone());
+        System.out.println("Recursive found key: " + recursionKey);
 
-        ObjectBox strangeMainBox = getFilledMainObjectBox();
-        findKeyByObjectRecursion(strangeMainBox.clone());
+        ObjectBox objectMainBox = getFilledMainObjectBox();
+        String objectRecursionKey = recursiveFindKeyFromObjectList(objectMainBox.clone());
+        System.out.println("Recursion found key from Object list: " + objectRecursionKey);
     }
 
-    private static void findKeyByStandard(Box mainBox) {
+    private static String findKeyByFromField(Box mainBox) {
         List<Box> pile = new ArrayList<>();
         pile.add(mainBox);
 
@@ -24,8 +26,7 @@ public class Recursion {
 
             for (Box box : currentBox.boxList) {
                 if (box.key != null) {
-                    System.out.println("Standard key: " + box.key);
-                    return;
+                    return box.key;
                 }
 
                 if (!box.boxList.isEmpty()) {
@@ -34,15 +35,17 @@ public class Recursion {
             }
             pile.remove(currentBox);
         }
+
+        return null;
     }
 
-    private static String findKeyByRecursion(Box box) {
+    private static String recursiveFindKeyFromField(Box box) {
         if (box.key != null) {
             return box.key;
         }
 
         for (Box currentBox : box.boxList) {
-            String key = findKeyByRecursion(currentBox);
+            String key = recursiveFindKeyFromField(currentBox);
             if (key != null) {
                 return key;
             }
@@ -51,15 +54,19 @@ public class Recursion {
         return null;
     }
 
-    private static void findKeyByObjectRecursion(Object thing) {
+    private static String recursiveFindKeyFromObjectList(Object thing) {
         if (thing instanceof String) {
-            System.out.println("ObjectBox Recursion key: " + thing);
-            return;
+            return (String) thing;
         }
 
         for (Object currentThing : ((ObjectBox) thing).boxList) {
-            findKeyByObjectRecursion(currentThing);
+            String key = recursiveFindKeyFromObjectList(currentThing);
+            if (key != null) {
+                return key;
+            }
         }
+
+        return null;
     }
 
     private static Box getFilledMainBox() {
@@ -79,9 +86,9 @@ public class Recursion {
         mainBox.boxList.get(3).boxList.add(new Box());
         mainBox.boxList.get(3).boxList.add(new Box());
         mainBox.boxList.get(3).boxList.get(1).boxList.add(new Box());
-//        Box boxWithKey = new Box();
-//        boxWithKey.key = "Key in box 3:1:1";
-//        mainBox.boxList.get(3).boxList.get(1).boxList.add(boxWithKey);
+        Box boxWithKey = new Box();
+        boxWithKey.key = "Key in box 3:1:1";
+        mainBox.boxList.get(3).boxList.get(1).boxList.add(boxWithKey);
         mainBox.boxList.get(3).boxList.get(1).boxList.add(new Box());
         mainBox.boxList.get(3).boxList.add(new Box());
 
